@@ -65,16 +65,57 @@
 	})(jQuery);
 
 /* ---------------------------------------------------------------------- */
-/*	SCROLL NAVIGATION
+/*	SCROLL NAVIGATION (requires mCustomScrollBar plugin)
 /* ---------------------------------------------------------------------- */
 (function($){
 	
-	var $container = $('#main-container'),
-		$navLinks = $('nav li a');
+	var smoothScroll = {
 
-	$navLinks.on('click', function(){
-		var href = $(this).attr('href');
-		$container.mCustomScrollbar("scrollTo",href);
-	});
+		container: $('#main-container'),
+		navLinks: $('nav li a'),
+
+		init: function() {			
+			this.hash_handler();
+			this.navLinks.on('click', this.scroll_handler);	
+		},
+
+		scroll_handler: function () {
+			var sC = smoothScroll,			
+				target = $(this).attr('href'); //clicked anchor hash
+
+			sC.container.mCustomScrollbar("scrollTo",target);
+			sC.removeAddSelected(target);			
+		},
+
+		hash_handler: function () {
+			var sC = smoothScroll,				
+				hash = window.location.hash;
+
+			if(hash) {
+				sC.container.mCustomScrollbar("scrollTo",hash);
+				sC.removeAddSelected(hash);
+			} else {
+				sC.removeAddSelected();
+			}
+
+		},
+
+		removeAddSelected: function (target){
+			var sC = smoothScroll,
+				navLinks = sC.navLinks;
+
+			navLinks.removeClass('selected');	
+
+			if(target) {
+				$('a[href='+target+']').addClass('selected');
+			} else {
+				navLinks.first().addClass('selected');
+			}
+		}
+
+	}
+
+	smoothScroll.init();
+
 
 })(jQuery);
