@@ -76,10 +76,10 @@ $(function(){
 			$this.addClass( $this.attr('data-categories') );
 			
 			if($thumbAnchor.hasClass('video')){
-				$thumbAnchor.append('<div class="thumb-image-hover"><img class="play-video" src="/img/empty.gif" /></div>');
+				$thumbAnchor.append('<div class="thumb-image-hover"><img class="play-video" src="img/empty.gif" /></div>');
 				
 			} else {
-				$thumbAnchor.append('<div class="thumb-image-hover"><img class="zoom-image" src="/img/empty.gif" /></div>');
+				$thumbAnchor.append('<div class="thumb-image-hover"><img class="zoom-image" src="img/empty.gif" /></div>');
 			}
 		});
 
