@@ -3,7 +3,17 @@
 /* ---------------------------------------------------------------------- */
 	(function($){
 
-		var $container = $('#main-container');
+		var $container = $('#main-container'),
+			$navLinks = $('nav a[href^="#"]');
+
+		$navLinks.each(function(){
+			var target = $(this).attr('href').replace(/#/, '');
+				$('#'+target).attr('id', target+'_modified'); // Change ID
+		});
+
+		$(window).hashchange(function(){
+			hash_handler();
+		});	
 
 		$("#main-container").mCustomScrollbar({
 			set_width:false, /*optional element width: boolean, pixels, percentage*/
@@ -27,11 +37,25 @@
 				autoExpandHorizontalScroll:false /*auto expand width for horizontal scrolling: boolean*/
 			},
 			callbacks:{
-				onScroll:function(){}, /*user custom callback function on scroll event*/
+				onScroll:function(){ OnScroll(); }, /*user custom callback function on scroll event*/
 				onTotalScroll:function(){}, /*user custom callback function on bottom reached event*/
 				onTotalScrollOffset:0 /*bottom reached offset: integer (pixels)*/
 			}
 		});
+
+		function OnScroll(){
+			$navLinks.each(function(){
+				var target = $(this).attr('href'),
+					targetPosition = $container.scrollTop() + $(target+'_modified').offset().top,
+					targetLimit = 320;
+				
+				if ($container.scrollTop() > (targetPosition - targetLimit)) {
+					$('nav a.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});			
+		}
+
 
 		getContainerHeight ();
 
@@ -52,7 +76,8 @@
 		    waitForFinalEvent(function(){
 		    	getContainerHeight();	
 		    }, 500, "resize-event-1");
-		});			
+		});
+
 
 		function getContainerHeight () {
 				//update container height on resize
@@ -62,60 +87,102 @@
 		      	$container.mCustomScrollbar('update');
 		}
 
+		function hash_handler () {
+			hash = window.location.hash;
+
+			if(hash) {
+			 	$container.mCustomScrollbar("scrollTo",hash+'_modified');
+			 	removeAddSelected(hash);
+			} else {
+			 	removeAddSelected();
+			}
+
+		}
+
+		function removeAddSelected(target) {
+
+			$navLinks.removeClass('selected');	
+
+			if(target) {
+			 	$('a[href='+target+']').addClass('selected');
+			} else {
+			 	$navLinks.first().addClass('selected');
+			}
+		}
+
+
+
 	})(jQuery);
 
 /* ---------------------------------------------------------------------- */
 /*	SCROLL NAVIGATION (requires mCustomScrollBar plugin)
 /* ---------------------------------------------------------------------- */
-(function($){
+// (function($){
 	
-	var smoothScroll = {
+// 	var smoothScroll = {
 
-		container: $('#main-container'),
-		navLinks: $('nav li a'),
+// 		container: $('#main-container'),
+// 		navLinks: $('nav li a'),
 
-		init: function() {			
-			this.hash_handler();
-			this.navLinks.on('click', this.scroll_handler);	
-		},
+// 		init: function() {	
+// 			this.hash_handler();
+// 			// this.navLinks.on('click', this.scroll_handler);	
+// 			this.navLinks.each(function(){
+// 				var target = $(this).attr('href').replace(/#/, '');
+// 					$('#'+target).attr('id', target+'_modified'); // Change ID
+// 			});
 
-		scroll_handler: function () {
-			var sC = smoothScroll,			
-				target = $(this).attr('href'); //clicked anchor hash
+// 			//this.scroll_handler();
+// 			$('.mCSB_container').on('scroll', this.scroll_handler);
+// 		},
 
-			sC.container.mCustomScrollbar("scrollTo",target);
-			sC.removeAddSelected(target);			
-		},
+// 		scroll_handler: function () {
+// 			// var sC = smoothScroll,
+// 			// 	container = sC.container,
+// 			// 	navLinks = sC.navLinks;			
 
-		hash_handler: function () {
-			var sC = smoothScroll,				
-				hash = window.location.hash;
 
-			if(hash) {
-				sC.container.mCustomScrollbar("scrollTo",hash);
-				sC.removeAddSelected(hash);
-			} else {
-				sC.removeAddSelected();
-			}
+// 			this.navLinks.each(function(){
+// 				console.log("scrolled");	
+// 			});	
 
-		},
+				
+// 		},
 
-		removeAddSelected: function (target){
-			var sC = smoothScroll,
-				navLinks = sC.navLinks;
+// 		hash_handler: function () {
+// 			var	sC = smoothScroll,
+// 				hash = window.location.hash;
 
-			navLinks.removeClass('selected');	
+// 			if(hash) {
+// 			 	sC.container.mCustomScrollbar("scrollTo",hash+'_modified');
+// 			 	sC.removeAddSelected(hash);
+// 			} else {
+// 			 	sC.removeAddSelected();
+// 			}
 
-			if(target) {
-				$('a[href='+target+']').addClass('selected');
-			} else {
-				navLinks.first().addClass('selected');
-			}
-		}
+// 		},
 
-	}
+// 		removeAddSelected: function (target){
+// 			var sC = smoothScroll,
+// 			 	navLinks = sC.navLinks;
 
-	smoothScroll.init();
+// 			navLinks.removeClass('selected');	
+
+// 			if(target) {
+// 			 	$('a[href='+target+']').addClass('selected');
+// 			} else {
+// 			 	navLinks.first().addClass('selected');
+// 			}
+// 		}
+
+// 	}
+
+// 	smoothScroll.init();
+
+// 	$(window).hashchange(function(){
+// 	// Set menu and scroll position according to #hash in URL
+// 		smoothScroll.hash_handler();
+// 	})
 
 
 // var page, // [DOM element] The main area to be scrolled
@@ -290,4 +357,4 @@
 // 	}
 
 
-})(jQuery);
+// })(jQuery);
