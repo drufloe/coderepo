@@ -11,11 +11,12 @@
 				$('#'+target).attr('id', target+'_modified'); // Change ID
 		});
 
+
 		$(window).hashchange(function(){
 			hash_handler();
 		});	
 
-		$("#main-container").mCustomScrollbar({
+		$container.mCustomScrollbar({
 			set_width:false, /*optional element width: boolean, pixels, percentage*/
 			set_height:"100%", /*optional element height: boolean, pixels, percentage*/
 			horizontalScroll:false, /*scroll horizontally: boolean*/
@@ -34,7 +35,8 @@
 			advanced:{
 				updateOnBrowserResize:true, /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
 				updateOnContentResize:true, /*auto-update scrollbars on content resize (for dynamic content): boolean*/
-				autoExpandHorizontalScroll:false /*auto expand width for horizontal scrolling: boolean*/
+				autoExpandHorizontalScroll:false, /*auto expand width for horizontal scrolling: boolean*/
+				autoScrollOnFocus: false,
 			},
 			callbacks:{
 				onScroll:function(){ OnScroll(); }, /*user custom callback function on scroll event*/
@@ -86,6 +88,8 @@
 		      	$container.css('height', $winHeight-$position.top-10);	
 		      	$container.mCustomScrollbar('update');
 		}
+
+		hash_handler();
 
 		function hash_handler () {
 			hash = window.location.hash;
